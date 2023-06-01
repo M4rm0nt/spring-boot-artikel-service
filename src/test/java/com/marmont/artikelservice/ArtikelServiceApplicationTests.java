@@ -16,7 +16,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.testcontainers.containers.MongoDBContainer;
+import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 
 
@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ArtikelServiceApplicationTests {
 
 	@Container
-	static MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:4.4.2");
+	static MySQLContainer mysql = new MySQLContainer("mysql:8.0.33");
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -44,12 +44,14 @@ class ArtikelServiceApplicationTests {
 	private ArtikelRepository artikelRepository;
 
 	static {
-		mongoDBContainer.start();
+		mysql.start();
 	}
 
 	@DynamicPropertySource
-	static void setProperties(DynamicPropertyRegistry dymDynamicPropertyRegistry) {
-		dymDynamicPropertyRegistry.add("spring.data.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
+	static void setProperties(DynamicPropertyRegistry registry) {
+		registry.add("spring.datasource.url", mysql::getJdbcUrl);
+		registry.add("spring.datasource.username", mysql::getUsername);
+		registry.add("spring.datasource.password", mysql::getPassword);
 	}
 
 	@BeforeEach
