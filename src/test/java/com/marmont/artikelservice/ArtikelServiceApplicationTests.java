@@ -124,9 +124,7 @@ class ArtikelServiceApplicationTests {
 				.andExpect(jsonPath("$.ean", org.hamcrest.Matchers.is(artikelRequest.getEan())));
 
 		Artikel updatedArtikel = artikelRepository.findById(artikel.getId()).orElseThrow();
-
 		Assertions.assertEquals(artikelRequest.getEan(), updatedArtikel.getEan());
-
 		Assertions.assertEquals(initialVersion + 1, updatedArtikel.getVersion());
 	}
 
