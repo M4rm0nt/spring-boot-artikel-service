@@ -12,27 +12,27 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/artikel") //  api/articles
+@RequestMapping("/api/artikel") 
 @RequiredArgsConstructor
 public class ArtikelController {
 
     public final ArtikelService artikelService;
 
-    @PostMapping // POST /api/artikel
+    @PostMapping 
     @ResponseStatus(HttpStatus.CREATED)
     public ArtikelResponse createArtikel(@Validated @RequestBody ArtikelRequest artikelRequest) {
 
         return artikelService.createArtikel(artikelRequest);
     }
 
-    @GetMapping // GET /api/artikel
+    @GetMapping 
     @ResponseStatus(HttpStatus.OK)
     public List<ArtikelResponse> getAllArtikel() {
 
         return artikelService.getAllArtikel();
     }
 
-    @GetMapping("{id}") // GET /api/artikel/42
+    @GetMapping("{id}") 
     @ResponseStatus(HttpStatus.OK)
     public ArtikelResponse getArtikelById(@PathVariable("id") long id) {
 
@@ -52,17 +52,10 @@ public class ArtikelController {
     }
 
     @GetMapping("search")
-    // GET /api/artikel/search?beschreibung=foo
-    // GET /api/artikel/search?ean=123
-    // GET /api/artikel/search?ean=123%&beschreibung=bar%
     @ResponseStatus(HttpStatus.OK)
-    public List<ArtikelResponse> searchArtikel( //
-                                                @RequestParam(value = "beschreibung", required = false) String beschreibung, //
-                                                @RequestParam(value = "ean", required = false) String ean //
-    ) {
+    public List<ArtikelResponse> searchArtikel(@RequestParam(value = "beschreibung", required = false) String beschreibung, @RequestParam(value = "ean", required = false) String ean) {
 
         return artikelService.searchArtikel(beschreibung, ean);
     }
-
 
 }
