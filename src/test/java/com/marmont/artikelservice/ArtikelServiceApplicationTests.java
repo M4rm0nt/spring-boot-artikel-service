@@ -28,17 +28,15 @@ import java.util.Optional;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@RequiredArgsConstructor
 class ArtikelServiceApplicationTests {
 
 	@Container
 	static MySQLContainer mysql = new MySQLContainer("mysql:8.0.33");
 
-	@Autowired
-	private MockMvc mockMvc;
-	@Autowired
-	private ObjectMapper objectMapper;
-	@Autowired
-	private ArtikelRepository artikelRepository;
+	private final MockMvc mockMvc;
+	private final ObjectMapper objectMapper;
+	private final ArtikelRepository artikelRepository;
 
 	static {
 		mysql.start();
