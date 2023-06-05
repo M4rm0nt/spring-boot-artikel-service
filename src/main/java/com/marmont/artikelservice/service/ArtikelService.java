@@ -19,20 +19,22 @@ import java.util.stream.Collectors;
 public class ArtikelService {
 
     private final ArtikelRepository artikelRepository;
+    
     private static final int DELETED = -1;
     private static final int INCREMENT_BY_ONE = 1;
 
     public ArtikelResponse createArtikel(ArtikelRequest artikelRequest) {
-        Artikel artikel = ArtikelMapper.INSTANCE.mapToArtikel(artikelRequest);
-        Artikel savedArtikel = artikelRepository.save(artikel);
-
+        
+        var artikel = ArtikelMapper.INSTANCE.mapToArtikel(artikelRequest);
+        var savedArtikel = artikelRepository.save(artikel);
         log.info("Artikel with id: {} is saved!", savedArtikel.getId());
+        
         return ArtikelMapper.INSTANCE.mapToArtikelResponse(savedArtikel);
     }
 
     public List<ArtikelResponse> getAllArtikel() {
-        List<Artikel> listOfArtikel = artikelRepository.findByStatusNot(DELETED);
-
+        
+        var listOfArtikel = artikelRepository.findByStatusNot(DELETED);
         log.info("All Artikel found!");
 
         return listOfArtikel.stream()
@@ -41,30 +43,30 @@ public class ArtikelService {
     }
 
     public ArtikelResponse getArtikelById(long id) {
-        Artikel artikel = artikelRepository.findById(id)
+        
+        var artikel = artikelRepository.findById(id)
                 .orElseThrow(() -> new ArtikelNotFoundException("Artikel not found with id: " + id));
+        
         if (artikel.getStatus() == DELETED) {
             throw new ArtikelNotFoundException("Artikel not found with id: " + id);
         }
-
+        
         log.info("Artikel found with id: {}", artikel.getId());
 
         return ArtikelMapper.INSTANCE.mapToArtikelResponse(artikel);
     }
 
     public ArtikelResponse updateArtikel(long id, ArtikelRequest artikelRequest) {
-        Artikel existingArtikel = artikelRepository.findById(id)
+        
+        var existingArtikel = artikelRepository.findById(id)
                 .orElseThrow(() -> new ArtikelNotFoundException("Artikel not found with id: " + id));
 
         existingArtikel.setEan(artikelRequest.getEan());
         existingArtikel.setBeschreibung(artikelRequest.getBeschreibung());
         existingArtikel.setEinkaufspreis(artikelRequest.getEinkaufspreis());
         existingArtikel.setVerkaufspreis(artikelRequest.getVerkaufspreis());
-
         existingArtikel.setVersion(existingArtikel.getVersion() + INCREMENT_BY_ONE);
-
         Artikel updatedArtikel = artikelRepository.save(existingArtikel);
-
         log.info("Artikel with id: {} is updated!", updatedArtikel.getId());
 
         return ArtikelMapper.INSTANCE.mapToArtikelResponse(updatedArtikel);
@@ -90,5 +92,4 @@ public class ArtikelService {
                 .map(ArtikelMapper.INSTANCE::mapToArtikelResponse)
                 .collect(Collectors.toList());
     }
-
 }
